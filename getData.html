@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Highcharts Example</title>
+
+        <script type="text/javascript" src="{$Think.const.JS_URL}jquery.min.js"></script>
+        <style type="text/css">
+        </style>
+        
+    </head>
+    <body>
+        <div id="chartContainer"></div>
+        <script type="text/javascript">
+            $(function () {
+                var chartsData;
+                var chart1 = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'chartContainer',
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: 'asdfsdf'
+                    },
+                    plotOptions: {
+                        pie: {
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y:f}'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.percentage:.2f}%</b> of total<br/>'
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'asdfsdf1111',
+                        data: []
+                    }]                    
+                });
+                $.post(
+                        "{:U('Resource/getDBData')}",
+                        function(data){
+                            chartsData = data;
+                            var series=[];
+                            var seriesKey;
+                            var seriesValue;
+                            var datastr = JSON.stringify(data);
+//                            datastr = datastr.replace(/[\{\}\[\]"]/g,"");
+//                            alert(datastr);
+                            var result = datastr.substr(1, datastr.length-2);
+                            result = result.replace(/["\{\}]/g,"");
+//                            alert(result);
+                            result = result.split(',');
+                            for (var i=0;i<result.length;++i){
+                                seriesKey = result[i].split(":")[0];
+                                seriesValue = parseFloat(result[i].split(":")[1]);
+                                series.push([seriesKey,seriesValue]);
+                            }
+//                            alert(seriesKey);
+//                            alert(seriesValue);
+                            chart1.series[0].setData(series);
+                        });
+            });
+        </script>
+        <script src="{$Think.const.JS_URL}highcharts.js"></script>
+        <script src="{$Think.const.JS_URL}modules/data.js"></script>
+        <script src="{$Think.const.JS_URL}modules/drilldown.js"></script>
+
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </body>
+</html>
+
